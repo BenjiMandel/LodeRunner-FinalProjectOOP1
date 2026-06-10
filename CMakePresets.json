@@ -9,14 +9,14 @@
       "name": "default",
       "hidden": true,
       "generator": "Ninja",
-      "binaryDir": "${sourceDir}/build/${presetName}",
-      "installDir": "${sourceDir}/install/${presetName}"
+      "binaryDir": "${sourceDir}/out/build/${presetName}",
+      "installDir": "${sourceDir}/out/install/${presetName}"
     },
     {
-      "name": "arm64-Debug",
+      "name": "x64-Debug",
       "inherits": "default",
       "architecture": {
-        "value": "arm64",
+        "value": "x64",
         "strategy": "external"
       },
       "cacheVariables": {
@@ -24,8 +24,8 @@
       }
     },
     {
-      "name": "arm64-Release",
-      "inherits": "arm64-Debug",
+      "name": "x64-Release",
+      "inherits": "x64-Debug",
       "cacheVariables": {
         "CMAKE_BUILD_TYPE": "RelWithDebInfo"
       }
@@ -33,36 +33,32 @@
   ],
   "buildPresets": [
     {
-      "name": "arm64-Debug",
-      "configurePreset": "arm64-Debug"
+      "name": "x64-Debug",
+      "configurePreset": "x64-Debug"
     },
     {
-      "name": "arm64-Release",
-      "configurePreset": "arm64-Release"
+      "name": "x64-Release",
+      "configurePreset": "x64-Release"
     },
     {
-      "name": "arm64-Zip",
-      "configurePreset": "arm64-Debug",
-      "targets": [ "Zip" ]
+      "name": "Zip",
+      "configurePreset": "x64-Debug",
+      "targets": ["Zip"]
     },
     {
-      "name": "arm64-ZipBackup",
-      "configurePreset": "arm64-Debug",
-      "targets": [ "ZipBackup" ]
+      "name": "ZipBackup",
+      "configurePreset": "x64-Debug",
+      "targets": ["ZipBackup"]
     }
   ],
   "testPresets": [
     {
-      "name": "arm64-Debug",
-      "configurePreset": "arm64-Debug"
+      "name": "x64-Debug",
+      "configurePreset": "x64-Debug"
     },
     {
-      "name": "arm64-Release",
-      "configurePreset": "arm64-Release"
+      "name": "x64-Release",
+      "configurePreset": "x64-Release"
     }
-
-    
   ]
 }
-
-
