@@ -18,21 +18,32 @@ add_subdirectory (resources)
 
 include (cmake/Zip.cmake)
 
-# 1. Force Shared Libraries (Homebrew default)
-set(SFML_STATIC_LIBRARIES OFF)
+# Use shared SFML libraries on all platforms
+set (SFML_STATIC_LIBRARIES OFF)
 
-# 2. Find SFML 3 components
-# Graphics and Audio are required for all platforms
+# Windows: point CMake to the local SFML installation
+if (WIN32)
+    set (SFML_LOCATION "C:/SFML/SFML-3.0.0")
+    set (SFML_DIR "${SFML_LOCATION}/lib/cmake/SFML")
+endif()
+
+# Graphics and Audio are required on all platforms
 find_package (SFML 3.0 COMPONENTS Graphics Audio REQUIRED)
-
-# 3. Link common libraries
 target_link_libraries (${CMAKE_PROJECT_NAME} SFML::Graphics SFML::Audio)
 
-# 4. Windows-specific configuration
+# Main is Windows-only (Mac gets it via the system/Homebrew SFML)
 if (WIN32)
-    # On Windows, we need the Main component to handle the entry point correctly
     find_package (SFML 3.0 COMPONENTS Main REQUIRED)
     target_link_libraries (${CMAKE_PROJECT_NAME} SFML::Main)
+
+    # Copy DLLs to output directory — kept inside WIN32 guard because
+    # $<TARGET_RUNTIME_DLLS:...> expands to empty on macOS and breaks the build
+    add_custom_command(TARGET ${CMAKE_PROJECT_NAME} POST_BUILD
+            COMMAND ${CMAKE_COMMAND} -E copy_if_different
+            $<TARGET_RUNTIME_DLLS:${CMAKE_PROJECT_NAME}>
+            $<TARGET_FILE_DIR:${CMAKE_PROJECT_NAME}>
+            COMMAND_EXPAND_LISTS
+    )
 endif()
 
 include (cmake/SFML.cmake)
